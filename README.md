@@ -5,7 +5,7 @@
 
 欢迎关注公众号
 <p align = "center">    
-<img  src="/assets/qrcode_for_gh.jpg?0701" width="400" />
+<img  src="/assets/qrcode_for_gh.jpg" width="400" />
 </p>
 
 
