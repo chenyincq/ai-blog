@@ -3,6 +3,11 @@
 一个功能强大的自媒体运营工具，一键发布视频到多平台（快手、YouTube、小红书、美拍、哔哩哔哩等）
 欢迎入群交流！
 
+欢迎关注公众号
+<p align = "center">    
+<img  src="/assets/qrcode_for_gh.jpg?0701" width="400" />
+</p>
+
 
 <p align = "center">    
 <img  src="/assets/qrcode.jpg?0701" width="400" />
