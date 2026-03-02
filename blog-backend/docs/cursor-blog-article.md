@@ -64,7 +64,7 @@ spring:
     show-sql: false
 ```
 
-执行项目中的 `db-init.sql`（或你维护的建表脚本），创建 `posts`、`comments`、`users` 等表。
+执行项目中的 `docs/scripts/db-init.sql`（或你维护的建表脚本），创建 `posts`、`comments`、`users` 等表。
 
 ### 3. 编写实体、Repository 与 Controller
 

@@ -29,7 +29,9 @@
 ```
 ai-blog/
 ├── blog-backend/           # 后端
-│   ├── db-init.sql         # 数据库初始化
+│   ├── docs/
+│   │   ├── scripts/       # 数据库脚本（db-init.sql、db-migration 等）
+│   │   └── api.md
 │   ├── blog-gateway/       # API 网关（端口 8080，统一转发）
 │   ├── blog-auth-service/  # 认证服务（端口 8082）
 │   └── blog-post-service/  # 文章服务（端口 8081）
@@ -41,7 +43,7 @@ ai-blog/
 ### 1. 数据库
 
 ```bash
-mysql -h <host> -u root -p < blog-backend/db-init.sql
+mysql -h <host> -u root -p < blog-backend/docs/scripts/db-init.sql
 ```
 
 默认管理员：`admin` / `admin123`。数据库地址需在 `blog-backend/*/src/main/resources/application.yml` 中配置。
