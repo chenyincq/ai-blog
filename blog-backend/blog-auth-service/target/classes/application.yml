@@ -1,0 +1,29 @@
+server:
+  port: 8082
+  address: 0.0.0.0
+
+spring:
+  datasource:
+    url: jdbc:mysql://192.168.100.183:3306/blog_db?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false
+    username: root
+    password: "smark@park"
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+  application:
+    name: blog-auth-service
+
+# 微信开放平台「网站应用」登录（需在微信开放平台创建应用并配置授权回调域）
+wechat:
+  app-id: ${WECHAT_APP_ID:your_wechat_app_id}
+  app-secret: ${WECHAT_APP_SECRET:your_wechat_app_secret}
+  redirect-uri: http://localhost:8082/api/auth/wechat/callback
+
+# 微信登录成功后前端重定向地址
+blog:
+  frontend-url: http://localhost:5173
+
+logging:
+  level:
+    root: info

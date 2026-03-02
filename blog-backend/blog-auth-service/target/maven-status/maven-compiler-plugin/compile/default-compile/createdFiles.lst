@@ -1,0 +1,10 @@
+com/example/blog/auth/web/AuthController$LoginRequest.class
+com/example/blog/auth/web/AuthController.class
+com/example/blog/auth/model/User.class
+com/example/blog/auth/repository/UserRepository.class
+com/example/blog/auth/security/JwtService.class
+com/example/blog/auth/web/AuthController$LoginResponse.class
+com/example/blog/auth/AuthServiceApplication.class
+com/example/blog/auth/service/WeChatLoginService.class
+com/example/blog/auth/service/WeChatLoginService$WeChatTokenResult.class
+com/example/blog/auth/service/WeChatLoginService$WeChatUserInfo.class

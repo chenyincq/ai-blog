@@ -1,0 +1,6 @@
+/Users/chenyin/IdeaProjects/autox-release/blog-backend/blog-auth-service/src/main/java/com/example/blog/auth/web/AuthController.java
+/Users/chenyin/IdeaProjects/autox-release/blog-backend/blog-auth-service/src/main/java/com/example/blog/auth/model/User.java
+/Users/chenyin/IdeaProjects/autox-release/blog-backend/blog-auth-service/src/main/java/com/example/blog/auth/security/JwtService.java
+/Users/chenyin/IdeaProjects/autox-release/blog-backend/blog-auth-service/src/main/java/com/example/blog/auth/repository/UserRepository.java
+/Users/chenyin/IdeaProjects/autox-release/blog-backend/blog-auth-service/src/main/java/com/example/blog/auth/AuthServiceApplication.java
+/Users/chenyin/IdeaProjects/autox-release/blog-backend/blog-auth-service/src/main/java/com/example/blog/auth/service/WeChatLoginService.java
