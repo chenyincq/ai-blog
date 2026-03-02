@@ -30,6 +30,7 @@
 ai-blog/
 ├── blog-backend/           # 后端
 │   ├── db-init.sql         # 数据库初始化
+│   ├── blog-gateway/       # API 网关（端口 8080，统一转发）
 │   ├── blog-auth-service/  # 认证服务（端口 8082）
 │   └── blog-post-service/  # 文章服务（端口 8081）
 └── blog-frontend/          # 前端（端口 5173）
@@ -47,14 +48,17 @@ mysql -h <host> -u root -p < blog-backend/db-init.sql
 
 ### 2. 后端
 
-需 **JDK 17**、**Maven**。
+需 **JDK 17**、**Maven**。前端统一请求网关 8080，网关转发到对应微服务。
 
 ```bash
-# 认证服务
+# 1. 认证服务（端口 8082）
 cd blog-backend/blog-auth-service && mvn spring-boot:run
 
-# 文章服务（另开终端）
+# 2. 文章服务（端口 8081，另开终端）
 cd blog-backend/blog-post-service && mvn spring-boot:run
+
+# 3. 网关（端口 8080，另开终端）
+cd blog-backend/blog-gateway && mvn spring-boot:run
 ```
 
 ### 3. 前端

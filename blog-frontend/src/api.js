@@ -10,10 +10,11 @@ const getApiHost = () => {
 }
 
 const { base: apiBase, useProxy } = getApiHost()
-const POST_API = useProxy ? `${apiBase}/api/posts` : `${apiBase}:8081/api/posts`
-const AUTH_API = useProxy ? `${apiBase}/api/auth` : `${apiBase}:8082/api/auth`
-const FRIEND_LINKS_API = useProxy ? `${apiBase}/api/friend-links` : `${apiBase}:8081/api/friend-links`
-const HOME_BANNERS_API = useProxy ? `${apiBase}/api/home-banners` : `${apiBase}:8081/api/home-banners`
+const GATEWAY = useProxy ? `${apiBase}` : `${apiBase}:8080`
+const POST_API = `${GATEWAY}/api/posts`
+const AUTH_API = `${GATEWAY}/api/auth`
+const FRIEND_LINKS_API = `${GATEWAY}/api/friend-links`
+const HOME_BANNERS_API = `${GATEWAY}/api/home-banners`
 
 export function getPosts(params = {}) {
   return fetch(`${POST_API}?${new URLSearchParams(params)}`).then(r => r.json())
