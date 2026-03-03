@@ -1,16 +1,19 @@
 const getApiHost = () => {
   if (typeof window === 'undefined' || !window.location?.hostname) {
-    return { base: 'http://localhost', useProxy: false }
+    return { base: '', useProxy: true }
   }
   const { protocol, hostname, origin } = window.location
+  // 生产 HTTPS 或通过网关/代理访问时，API 与前端同源
   const isProdHttps = protocol === 'https:' && hostname !== 'localhost' && hostname !== '127.0.0.1'
-  return isProdHttps
-    ? { base: origin, useProxy: true }
-    : { base: `${protocol}//${hostname}`, useProxy: false }
+  const isLocalDev = hostname === 'localhost' || hostname === '127.0.0.1'
+  if (isProdHttps || isLocalDev) {
+    return { base: '', useProxy: true }
+  }
+  return { base: `${protocol}//${hostname}:8080`, useProxy: false }
 }
 
 const { base: apiBase, useProxy } = getApiHost()
-const GATEWAY = useProxy ? `${apiBase}` : `${apiBase}:8080`
+const GATEWAY = useProxy ? apiBase : `${apiBase}`
 const POST_API = `${GATEWAY}/api/posts`
 const AUTH_API = `${GATEWAY}/api/auth`
 const FRIEND_LINKS_API = `${GATEWAY}/api/friend-links`
@@ -160,6 +163,25 @@ export function uploadCover(file, token) {
     headers: { Authorization: `Bearer ${token}` },
     body: form
   }).then(r => r.json()).then(d => d.url)
+}
+
+export function uploadImage(file, token) {
+  const form = new FormData()
+  form.append('file', file)
+  return fetch(`${POST_API}/admin/image`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: form
+  }).then(r => r.json()).then(d => {
+    const path = d.url || ''
+    const base = getUploadBaseUrl()
+    return path.startsWith('http') ? path : base + path
+  })
+}
+
+export function getUploadBaseUrl() {
+  const { base, useProxy } = getApiHost()
+  return useProxy ? base : `${base}:8080`
 }
 
 export function getFriendLinks() {

@@ -1,5 +1,6 @@
 package com.example.blog.post.web;
 
+import com.example.blog.post.config.UploadProperties;
 import com.example.blog.post.model.Comment;
 import com.example.blog.post.model.Post;
 import com.example.blog.post.model.PostLike;
@@ -32,11 +33,14 @@ public class PostController {
     private final PostRepository repository;
     private final CommentRepository commentRepository;
     private final PostLikeRepository postLikeRepository;
+    private final UploadProperties uploadProperties;
 
-    public PostController(PostRepository repository, CommentRepository commentRepository, PostLikeRepository postLikeRepository) {
+    public PostController(PostRepository repository, CommentRepository commentRepository,
+                         PostLikeRepository postLikeRepository, UploadProperties uploadProperties) {
         this.repository = repository;
         this.commentRepository = commentRepository;
         this.postLikeRepository = postLikeRepository;
+        this.uploadProperties = uploadProperties;
     }
 
     @GetMapping
@@ -73,15 +77,15 @@ public class PostController {
         return pageBody(content, total, page, size);
     }
 
+    /** 热门文章：按浏览量倒序取前10篇 */
     @GetMapping("/popular")
     public Map<String, Object> listPopular(
             @RequestParam(name = "page", defaultValue = "0") int page,
-            @RequestParam(name = "size", defaultValue = "20") int size) {
+            @RequestParam(name = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(
                 Sort.Order.desc("viewCount"),
-                Sort.Order.desc("likeCount"),
                 Sort.Order.desc("createdAt")));
-        Page<Post> p = repository.findByPublishedTrueOrderByViewCountDescLikeCountDesc(pageable);
+        Page<Post> p = repository.findByPublishedTrueOrderByViewCountDesc(pageable);
         return pageBody(p.getContent(), p.getTotalElements(), p.getNumber(), p.getSize());
     }
 
@@ -214,7 +218,7 @@ public class PostController {
     @PostMapping("/admin/cover")
     public Map<String, String> uploadCover(@RequestParam("file") MultipartFile file) throws IOException {
         if (file.isEmpty()) throw new IOException("Empty file");
-        Path dir = Paths.get("uploads");
+        Path dir = uploadProperties.resolveAbsolutePath();
         Files.createDirectories(dir);
         String ext = "";
         String name = file.getOriginalFilename();
@@ -223,6 +227,19 @@ public class PostController {
         file.transferTo(dir.resolve(filename).toFile());
         String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/uploads/").path(filename).toUriString();
         return Map.of("url", url);
+    }
+
+    @PostMapping("/admin/image")
+    public Map<String, String> uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
+        if (file.isEmpty()) throw new IOException("Empty file");
+        Path dir = uploadProperties.resolveAbsolutePath();
+        Files.createDirectories(dir);
+        String ext = "";
+        String name = file.getOriginalFilename();
+        if (name != null && name.contains(".")) ext = name.substring(name.lastIndexOf('.'));
+        String filename = "image_" + System.currentTimeMillis() + ext;
+        file.transferTo(dir.resolve(filename).toFile());
+        return Map.of("url", "/uploads/" + filename);
     }
 
     @GetMapping("/admin/comments")

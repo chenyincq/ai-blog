@@ -7,7 +7,7 @@ const router = useRouter()
 const posts = ref([])
 const totalElements = ref(0)
 const page = ref(0)
-const size = ref(20)
+const size = ref(10)
 const loading = ref(false)
 
 async function load() {
@@ -29,7 +29,7 @@ const totalPages = () => Math.ceil(totalElements.value / size.value) || 1
 <template>
   <div class="page">
     <h1 class="page-title">热门文章</h1>
-    <p class="page-desc">按阅读量排序</p>
+    <p class="page-desc">按浏览量倒序，展示前10篇热门文章</p>
 
     <p v-if="loading">加载中...</p>
     <template v-else>
@@ -52,6 +52,7 @@ const totalPages = () => Math.ceil(totalElements.value / size.value) || 1
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                 {{ post.viewCount ?? 0 }}
               </span>
+              <span v-if="(post.viewCount ?? 0) > 5" class="stat-flame" title="热度">🔥</span>
             </div>
           </div>
         </article>

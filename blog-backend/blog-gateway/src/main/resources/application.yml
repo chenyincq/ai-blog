@@ -7,20 +7,6 @@ spring:
     name: blog-gateway
   cloud:
     gateway:
-      globalcors:
-        add-to-simple-url-handler-mapping: true
-        cors-configurations:
-          '[/**]':
-            allowedOrigins:
-              - "http://localhost:5173"
-              - "http://localhost:5174"
-              - "http://localhost:5175"
-              - "http://127.0.0.1:5173"
-              - "http://127.0.0.1:5174"
-              - "http://127.0.0.1:5175"
-            allowedMethods: "*"
-            allowedHeaders: "*"
-            allowCredentials: true
       routes:
         - id: auth
           uri: http://localhost:8082
@@ -38,6 +24,10 @@ spring:
           uri: http://localhost:8081
           predicates:
             - Path=/api/home-banners/**
+        - id: uploads
+          uri: http://localhost:8081
+          predicates:
+            - Path=/uploads/**
 
 logging:
   level:

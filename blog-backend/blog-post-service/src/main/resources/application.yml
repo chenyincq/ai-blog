@@ -2,6 +2,12 @@ server:
   port: 8081
   address: 0.0.0.0
 
+# 上传文件存储路径，建议使用绝对路径避免 Tomcat 临时目录问题
+# 例如：/var/blog/uploads 或 ${user.home}/blog-uploads
+blog:
+  upload:
+    path: ${user.home}/blog-uploads
+
 spring:
   datasource:
     url: jdbc:mysql://192.168.100.183:3306/blog_db?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false

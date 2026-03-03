@@ -634,6 +634,13 @@ a:hover { text-decoration: underline; }
   grid-column: 2;
   grid-row: 2;
 }
+.popular-card .stat-flame {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 4px;
+  font-size: 1rem;
+  line-height: 1;
+}
 
 /* 文章详情 */
 .article-header { margin-bottom: 24px; }
@@ -691,6 +698,7 @@ a:hover { text-decoration: underline; }
 .article-content :deep(ul), .article-content :deep(ol) { margin: 0 0 1em; padding-left: 1.5em; }
 .article-content :deep(pre) { background: var(--surface); padding: 16px; border-radius: 8px; overflow-x: auto; }
 .article-content :deep(code) { background: var(--accent-soft); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+.article-content :deep(img) { max-width: 100%; height: auto; border-radius: 8px; }
 
 /* 筛选与侧栏 */
 .list-layout {
