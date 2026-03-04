@@ -89,6 +89,7 @@ watch([page, postIdFilter], () => { page.value = 0; load() })
           <tr>
             <th>ID</th>
             <th>文章</th>
+            <th>类型</th>
             <th>昵称</th>
             <th>内容</th>
             <th>状态</th>
@@ -101,6 +102,10 @@ watch([page, postIdFilter], () => { page.value = 0; load() })
             <td>{{ c.id }}</td>
             <td>
               <button type="button" class="link-btn" @click="goToPost(c.postId)">{{ c.postId }}</button>
+            </td>
+            <td>
+              <span v-if="c.parentId" class="muted">回复 #{{ c.parentId }}</span>
+              <span v-else class="muted">评论</span>
             </td>
             <td>{{ c.author }}</td>
             <td class="comment-content-cell">{{ (c.content || '').slice(0, 80) }}{{ (c.content && c.content.length > 80) ? '…' : '' }}</td>

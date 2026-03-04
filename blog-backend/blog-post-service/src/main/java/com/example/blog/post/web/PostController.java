@@ -283,8 +283,16 @@ public class PostController {
         if (!repository.existsById(postId)) {
             return ResponseEntity.notFound().build();
         }
+        Long parentId = req.getParentId();
+        if (parentId != null) {
+            Comment parent = commentRepository.findById(parentId).orElse(null);
+            if (parent == null || !parent.getPostId().equals(postId) || !parent.getApproved()) {
+                return ResponseEntity.badRequest().build();
+            }
+        }
         Comment c = new Comment();
         c.setPostId(postId);
+        c.setParentId(parentId);
         c.setAuthor(req.getAuthor());
         c.setContent(req.getContent());
         c.setApproved(false);
@@ -327,9 +335,12 @@ public class PostController {
         private String author;
         @NotBlank
         private String content;
+        private Long parentId;
         public String getAuthor() { return author; }
         public void setAuthor(String author) { this.author = author; }
         public String getContent() { return content; }
         public void setContent(String content) { this.content = content; }
+        public Long getParentId() { return parentId; }
+        public void setParentId(Long parentId) { this.parentId = parentId; }
     }
 }

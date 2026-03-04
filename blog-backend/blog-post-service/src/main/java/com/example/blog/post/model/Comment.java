@@ -14,6 +14,9 @@ public class Comment {
     @Column(name = "post_id", nullable = false)
     private Long postId;
 
+    @Column(name = "parent_id")
+    private Long parentId;
+
     @Column(nullable = false, length = 100)
     private String author;
 
@@ -31,6 +34,8 @@ public class Comment {
     public void setId(Long id) { this.id = id; }
     public Long getPostId() { return postId; }
     public void setPostId(Long postId) { this.postId = postId; }
+    public Long getParentId() { return parentId; }
+    public void setParentId(Long parentId) { this.parentId = parentId; }
     public String getAuthor() { return author; }
     public void setAuthor(String author) { this.author = author; }
     public String getContent() { return content; }
