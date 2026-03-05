@@ -91,6 +91,8 @@ watch([page, postIdFilter], () => { page.value = 0; load() })
             <th>文章</th>
             <th>类型</th>
             <th>昵称</th>
+            <th>地址</th>
+            <th>IP</th>
             <th>内容</th>
             <th>状态</th>
             <th>时间</th>
@@ -108,6 +110,8 @@ watch([page, postIdFilter], () => { page.value = 0; load() })
               <span v-else class="muted">评论</span>
             </td>
             <td>{{ c.author }}</td>
+            <td class="muted">{{ c.address || '未知地址' }}</td>
+            <td class="muted">{{ c.ip || '—' }}</td>
             <td class="comment-content-cell">{{ (c.content || '').slice(0, 80) }}{{ (c.content && c.content.length > 80) ? '…' : '' }}</td>
             <td>
               <span :class="c.approved ? 'status-done' : 'status-pending'">{{ c.approved ? '已通过' : '待审核' }}</span>

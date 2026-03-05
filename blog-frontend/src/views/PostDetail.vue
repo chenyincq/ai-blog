@@ -61,10 +61,10 @@ async function loadComments() {
 }
 
 async function submitComment(parentId = null) {
-  const author = (parentId ? replyAuthor : commentAuthor).value?.trim()
+  const author = (parentId ? replyAuthor : commentAuthor).value?.trim() || ''
   const content = (parentId ? replyContent : commentContent).value?.trim()
-  if (!author || !content) {
-    commentError.value = '请填写昵称和评论内容'
+  if (!content) {
+    commentError.value = '请填写评论内容'
     commentSuccess.value = ''
     return
   }
@@ -72,7 +72,8 @@ async function submitComment(parentId = null) {
   commentSuccess.value = ''
   commentSubmitting.value = true
   try {
-    const data = { author, content }
+    const data = { content }
+    if (author) data.author = author
     if (parentId) data.parentId = parentId
     await postComment(route.params.id, data)
     commentContent.value = ''
@@ -83,7 +84,7 @@ async function submitComment(parentId = null) {
     commentSuccess.value = '已提交，审核通过后会显示'
     setTimeout(() => { commentSuccess.value = '' }, 3000)
   } catch (e) {
-    commentError.value = '发布失败，请重试'
+    commentError.value = e?.message || '发布失败，请重试'
   } finally {
     commentSubmitting.value = false
   }
@@ -135,7 +136,7 @@ onMounted(() => {
       <section class="comments-section">
         <h3 class="comments-title">评论 ({{ totalCommentCount }})</h3>
         <div class="comment-form">
-          <input v-model="commentAuthor" type="text" placeholder="昵称" maxlength="50" />
+          <input v-model="commentAuthor" type="text" placeholder="昵称（选填，默认匿名用户）" maxlength="50" />
           <textarea v-model="commentContent" placeholder="写下你的评论…" rows="3"></textarea>
           <p v-if="commentError && !replyingTo" class="error">{{ commentError }}</p>
           <p v-if="commentSuccess" class="success-msg">{{ commentSuccess }}</p>

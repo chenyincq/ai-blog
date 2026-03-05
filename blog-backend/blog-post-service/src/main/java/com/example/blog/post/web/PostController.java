@@ -1,18 +1,21 @@
 package com.example.blog.post.web;
 
 import com.example.blog.post.config.UploadProperties;
+import com.example.blog.post.util.IpLocationUtil;
 import com.example.blog.post.model.Comment;
 import com.example.blog.post.model.Post;
 import com.example.blog.post.model.PostLike;
 import com.example.blog.post.repository.CommentRepository;
 import com.example.blog.post.repository.PostLikeRepository;
 import com.example.blog.post.repository.PostRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -243,15 +246,16 @@ public class PostController {
     }
 
     @GetMapping("/admin/comments")
-    public Page<Comment> listCommentsAdmin(
+    @JsonView(JsonViews.AdminView.class)
+    public Map<String, Object> listCommentsAdmin(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "20") int size,
             @RequestParam(name = "postId", required = false) Long postId) {
         Pageable pageable = PageRequest.of(page, size);
-        if (postId != null) {
-            return commentRepository.findByPostIdOrderByCreatedAtDesc(postId, pageable);
-        }
-        return commentRepository.findAllByOrderByCreatedAtDesc(pageable);
+        Page<Comment> p = postId != null
+                ? commentRepository.findByPostIdOrderByCreatedAtDesc(postId, pageable)
+                : commentRepository.findAllByOrderByCreatedAtDesc(pageable);
+        return pageBody(p.getContent(), p.getTotalElements(), p.getNumber(), p.getSize());
     }
 
     @DeleteMapping("/admin/comments/{commentId}")
@@ -264,6 +268,7 @@ public class PostController {
     }
 
     @PutMapping("/admin/comments/{commentId}/approve")
+    @JsonView(JsonViews.AdminView.class)
     public ResponseEntity<Comment> approveCommentAdmin(@PathVariable("commentId") Long commentId) {
         return commentRepository.findById(commentId)
                 .map(c -> {
@@ -274,12 +279,15 @@ public class PostController {
     }
 
     @GetMapping("/{postId}/comments")
+    @JsonView(JsonViews.PublicView.class)
     public List<Comment> listComments(@PathVariable("postId") Long postId) {
         return commentRepository.findByPostIdAndApprovedOrderByCreatedAtAsc(postId, true);
     }
 
     @PostMapping("/{postId}/comments")
-    public ResponseEntity<Comment> addComment(@PathVariable("postId") Long postId, @Valid @RequestBody CommentRequest req) {
+    @JsonView(JsonViews.PublicView.class)
+    public ResponseEntity<Comment> addComment(@PathVariable("postId") Long postId, @Valid @RequestBody CommentRequest req,
+                                              HttpServletRequest request) {
         if (!repository.existsById(postId)) {
             return ResponseEntity.notFound().build();
         }
@@ -293,10 +301,26 @@ public class PostController {
         Comment c = new Comment();
         c.setPostId(postId);
         c.setParentId(parentId);
-        c.setAuthor(req.getAuthor());
-        c.setContent(req.getContent());
+        String author = trim(req.getAuthor());
+        c.setAuthor(author != null && !author.isEmpty() ? author : "匿名用户");
+        c.setContent(req.getContent().trim());
         c.setApproved(false);
+        String ip = getClientIp(request);
+        c.setIp(ip);
+        c.setAddress(IpLocationUtil.resolveAddress(ip));
         return ResponseEntity.ok(commentRepository.save(c));
+    }
+
+    private String getClientIp(HttpServletRequest request) {
+        String xff = request.getHeader("X-Forwarded-For");
+        if (xff != null && !xff.isBlank()) {
+            return xff.split(",")[0].trim();
+        }
+        String xri = request.getHeader("X-Real-IP");
+        if (xri != null && !xri.isBlank()) {
+            return xri.trim();
+        }
+        return request.getRemoteAddr();
     }
 
     private Post mapToPost(Post p, PostRequest req) {
@@ -311,7 +335,7 @@ public class PostController {
         return p;
     }
 
-    private Map<String, Object> pageBody(List<Post> content, long total, int page, int size) {
+    private Map<String, Object> pageBody(List<?> content, long total, int page, int size) {
         Map<String, Object> m = new HashMap<>();
         m.put("content", content);
         m.put("totalElements", total);
@@ -331,9 +355,8 @@ public class PostController {
     }
 
     public static class CommentRequest {
-        @NotBlank
         private String author;
-        @NotBlank
+        @NotBlank(message = "回复内容必填")
         private String content;
         private Long parentId;
         public String getAuthor() { return author; }

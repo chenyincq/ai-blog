@@ -67,8 +67,15 @@ export function postComment(postId, data) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
-  }).then(r => {
-    if (!r.ok) throw new Error('Comment failed')
+  }).then(async (r) => {
+    if (!r.ok) {
+      let msg = '发布失败'
+      try {
+        const err = await r.json()
+        if (err?.message) msg = err.message
+      } catch (_) {}
+      throw new Error(msg)
+    }
     return r.json()
   })
 }
