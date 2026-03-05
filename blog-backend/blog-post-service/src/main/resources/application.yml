@@ -10,9 +10,9 @@ blog:
 
 spring:
   datasource:
-    url: jdbc:mysql://192.168.100.183:3306/blog_db?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false
+    url: jdbc:mysql://{ip}:3402/blog_db?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false
     username: root
-    password: "smark@park"
+    password: "{password}"
   jpa:
     hibernate:
       ddl-auto: none
